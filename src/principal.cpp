@@ -108,27 +108,48 @@ void principal::DisplayPlatformInfo(cl_platform_id id,cl_platform_info name,std:
 void principal::Devices(cl_platform_id platform){
 	cl_int errNum;
 	cl_uint numDevices;
-	errNum = clGetDeviceIDs(platform,CL_DEVICE_TYPE_CPU,0,NULL,&numDevices);
+	errNum = clGetDeviceIDs(platform,CL_DEVICE_TYPE_ALL,0,NULL,&numDevices);
 	if (numDevices < 1)
 	{
 		std::cout << "No GPU device found for platform "<< platform << std::endl;
 //		exit(1);
 	}else{
-		deviceIds = (cl_device_id *)alloca(sizeof(cl_platform_id) * numDevices);
-		errNum = clGetDeviceIDs(platform,CL_DEVICE_TYPE_CPU,1,deviceIds,NULL);
+		deviceIds = (cl_device_id *)alloca(sizeof(cl_device_id) * numDevices);
+		errNum = clGetDeviceIDs(platform,CL_DEVICE_TYPE_ALL,numDevices,deviceIds,NULL);
 	}
-	std::cout << "Numero de devices en la plataforma: \t" << numDevices << std::endl;
+	std::cout << "Numero de dispositivos en la plataforma: " << numDevices << std::endl;
 
 	/*Para cada plataforma en el equipo obtenemos su información*/
 	// Iterate through the list of platforms displaying associated
 	// information
 	for (cl_uint i = 0; i < numDevices; i++) {
 		// First we display information associated with the platform
-		DisplayDevicesInfo(deviceIds[i], CL_DEVICE_TYPE, "CL_DEVICE_TYPE");
+//		DisplayDevicesInfo(deviceIds[i], CL_DEVICE_TYPE, "CL_DEVICE_TYPE");
 		DisplayDevicesInfo(deviceIds[i], CL_DEVICE_MAX_COMPUTE_UNITS, "CL_DEVICE_MAX_COMPUTE_UNITS");
 	}
+
+//	errNum = clGetDeviceIDs(platform,CL_DEVICE_TYPE_CPU,0,NULL,&numDevices);
+//	if (numDevices < 1)
+//	{
+//		std::cout << "No CPU device found for platform "<< platform << std::endl;
+//		//		exit(1);
+//	}else{
+//		deviceIds = (cl_device_id *)alloca(sizeof(cl_platform_id) * numDevices);
+//		errNum = clGetDeviceIDs(platform,CL_DEVICE_TYPE_CPU,1,deviceIds,NULL);
+//	}
+//	std::cout << "Numero de CPU en la plataforma: \t" << numDevices << std::endl;
+//
+//	/*Para cada plataforma en el equipo obtenemos su información*/
+//	// Iterate through the list of platforms displaying associated
+//	// information
+//	for (cl_uint i = 0; i < numDevices; i++) {
+//		// First we display information associated with the platform
+//		//		DisplayDevicesInfo(deviceIds[i], CL_DEVICE_TYPE, "CL_DEVICE_TYPE");
+////		DisplayDevicesInfo(deviceIds[i], CL_DEVICE_MAX_COMPUTE_UNITS, "CL_DEVICE_MAX_COMPUTE_UNITS");
+//	}
 }
 
+//template <typename T>
 void principal::DisplayDevicesInfo(cl_device_id id,cl_device_info name,std::string str){
 	cl_int errNum;
 	std::size_t paramValueSize;
@@ -141,15 +162,16 @@ void principal::DisplayDevicesInfo(cl_device_id id,cl_device_info name,std::stri
 		return;
 	}
 	/*Convierto a char lo que contiene la memoria que se obtubo en el paso anterior*/
-	char * info = (char *)alloca(sizeof(char) * paramValueSize);
+//	T * info = (T *)alloca(sizeof(T) * paramValueSize);
+//	void  info = (void )alloca(sizeof(void) * paramValueSize);
 	/*Consulto el parametro buscado que se gurada en la misma locacion de mem*/
-	errNum = clGetDeviceInfo(id,name,paramValueSize,info,NULL);
+//	errNum = clGetDeviceInfo(id,name,paramValueSize,&info,NULL);
 	if (errNum != CL_SUCCESS)
 	{
 		std::cerr << "Failed to find OpenCL Device " << str << "." << std::endl;
 		return;
 	}
-	std::cout << "\t" << str << ":\t" << info << std::endl;
+//	std::cout << "\t" << str << ":\t" << info << std::endl;
 }
 
 int main(){
